@@ -1,3 +1,70 @@
 # Venom: A Generic Backdoor Attack Enhancer for Improving Survivability by Decision Path Coupling
 
+
+
 Backdoor attacks have been one of the emerging security threats to deep neural networks (DNNs), leading to serious consequences. One of the mainstream backdoor defenses is model reconstruction-based. Such defenses adopt model unlearning or pruning to eliminate backdoors. However, little attention has been paid to survive from such defenses. To bridge the gap, we propose Venom, the first generic backdoor attack enhancer to improve the survivability of existing backdoor attacks against model reconstruction-based defenses. We formalize Venom as a binary-task optimization problem. The first is the original backdoor attack task to preserve the original attack capability, while the second is the attack enhancement task to improve the attack survivability. To realize the second task, we propose attention imitation loss to force the decision path of poisoned samples in backdoored models to couple with the crucial decision path of benign samples, which makes backdoors difficult to eliminate. Our extensive evaluation on two DNNs and three datasets has demonstrated that Venom significantly improves the survivability of eight state-of-the-art attacks against eight state-of-the-art defenses without impacting the capability of the original attacks.
+
+
+
+## Installation
+
+You can run the following script to configurate necessary environment
+
+```shell
+git clone https://github.com/VenomEnhancer/Venom.git
+cd Venom
+conda create -n venom python=3.8
+conda activate venom
+sh ./sh/install.sh
+```
+
+
+
+## Quick Start
+
+### Attack
+
+This is a example for BadNets and Venom-BadNets
+
+1. Original BadNets
+
+
+
+```python
+mkdir -p record/cifar10/vgg19_bn/original_attack/
+
+python ./attack/badnet.py --is_couple "False" --model vgg19_bn --sim_mode clean --yaml_path ../config/attack/prototype/cifar10.yaml --save_folder_name "cifar10/vgg19_bn/original_attack/original_badnet" --device "cuda:0"
+```
+
+
+
+2. Venom-BadNets
+
+```python
+mkdir -p record/cifar10/vgg19_bn/venom/single_deep_conv_10_beta_20_half_5
+
+python ./attack/badnet.py --is_couple "True" --model vgg19_bn --sim_mode "single_deep_conv_10" --half_epochs 5 --sim_beta 20 --yaml_path ../config/attack/prototype/cifar10.yaml --save_folder_name "cifar10/vgg19_bn/venom/single_deep_conv_10_beta_20_half_5/venom_badnet" --device "cuda:0"
+```
+
+
+
+
+### Defense
+
+This is a demo script of running NAD defense on original BadNets attack. Before defense you need to run Original BadNets attack on CIFAR10 at first. Then use the `save_folder_name` as `result_file`.
+
+```python
+python ./defense/nad.py --model "vgg19_bn" --result_file "cifar10/vgg19_bn/original_attack/original_badnet" --yaml_path ./config/defense/nad/cifar10.yaml --dataset "cifar10"  --device "cuda:0"
+```
+
+Similarly, you can run NAD defense on Venom-BadNets attack with the following script.
+```python
+python ./defense/nad.py --model "vgg19_bn" --result_file "cifar10/vgg19_bn/venom/single_deep_conv_10_beta_20_half_5/venom_badnet" --yaml_path ./config/defense/nad/cifar10.yaml --dataset "cifar10"  --device "cuda:0"
+```
+
+
+
+
+## Notation
+
+Our implementation is based on [BackdoorBench](https://github.com/SCLBD/BackdoorBench), and we refer readers to [BackdoorBench](https://github.com/SCLBD/BackdoorBench) for detailed instructions regarding the basic configuration.
