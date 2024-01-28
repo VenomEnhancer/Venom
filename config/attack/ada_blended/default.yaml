@@ -1,0 +1,5 @@
+attack_label_trans: all2one
+attack_target: 0
+attack: ada_blended
+p_ratio: 0.006
+random_seed: 666
