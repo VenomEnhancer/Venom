@@ -20,6 +20,14 @@ def auto_func(f='func1', batch_num_per_epoch=1):
         return cos_func
     return None
 
+def get_target_layer(model_name):
+    if model_name == 'vgg19_bn':
+        return 'features.49'
+    elif model_name == 'preactresnet18':
+        return 'layer4.1.conv2'
+    else:
+        return NotImplementedError("Unsupported Model Structure")
+
 def get_single_deep_p1_list():
     return ['single_deep_p1',
             'single_deep_p1_80',

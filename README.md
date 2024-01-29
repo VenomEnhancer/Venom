@@ -18,17 +18,39 @@ conda activate venom
 sh ./sh/install.sh
 ```
 
+Note that for some attacks, they may need preprocessed datasets or pretrained models for training. For yoor ease, the datasets and models are provided in google drive. You can download label-consistent and ssba from [here](https://drive.google.com/drive/folders/1lnCObVBIUTSlLWIBQtfs_zi7W8yuvR-2?usp=share_link), and other resources from [here](https://drive.google.com/drive/folders/1927j981vXgTLSJM8NWJaGLvkrxIWPUHU?usp=sharing).
+
+We also provide micro-trained model and generated TCDP in google drive, you can download them from [here](https://drive.google.com/drive/folders/1mSL64S07OQKw0VEzDDz6Bs2FzlG5Yf6C?usp=sharing). The downloaded files should be organized as follows：
+
+```
+Venom/
+│
+├── resource/
+│   ├── ada_blended/
+│   ├── badnet/
+│   ├── blended/
+│   ├── label-consistent/
+│   ├── ssba/
+│   └── trojannn/
+│
+├── similarity/
+│   ├── results/
+│   ├── calc_similarity.py
+│   ├── CKA.py
+│   └── sim.yaml
+│
+└── ...
+```
+
 
 
 ## Quick Start
 
 ### Attack
 
-This is a example for BadNets and Venom-BadNets
+This is an example for BadNets and Venom-BadNets.  Other hyperparameters follow default values in `attack/prototype.py`
 
 1. Original BadNets
-
-
 
 ```python
 mkdir -p record/cifar10/vgg19_bn/original_attack/
@@ -68,3 +90,4 @@ python ./defense/nad.py --model "vgg19_bn" --result_file "cifar10/vgg19_bn/venom
 ## Notation
 
 Our implementation is based on [BackdoorBench](https://github.com/SCLBD/BackdoorBench), and we refer readers to [BackdoorBench](https://github.com/SCLBD/BackdoorBench) for detailed instructions regarding the basic configuration.
+
