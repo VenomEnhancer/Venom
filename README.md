@@ -8,7 +8,7 @@ Backdoor attacks have been one of the emerging security threats to deep neural n
 
 ## Installation
 
-You can run the following script to configurate necessary environment
+You can run the following script to configurate necessary environment:
 
 ```shell
 git clone https://github.com/VenomEnhancer/Venom.git
@@ -48,13 +48,33 @@ Venom/
 
 ### Attack
 
-This is an example for BadNets and Venom-BadNets.  Other hyperparameters follow default values in `attack/prototype.py`
+Here we show how to obtain Venom-Enhanced backdoored models and Original backdoored models. Since we have provided micro-trained model and clean model, you can directly **skip** the ***TCDP Generation*** step and run the ***Training*** script.
+
+#### TCDP Generation
+
+This is an example for generating TCDP. First, training a clean model is needed. You can run the following script to train (/ micro-train)  a clean model. You will find details in `similarity/calc_similarity.py` .
+
+```shell
+python similarity/calc_similarity.py --mode train --save_path "results/cifar10/vgg19_bn" --model "vgg19_bn" --device "cuda:0" --dataset "cifar10"
+```
+
+Then you can obtain TCDP with the following script:
+
+```shell
+mkdir -p similarity/results/cifar10/vgg19_bn/similarity/
+python similarity/calc_similarity.py --mode calc --save_path "results/cifar10/vgg19_bn" --model "vgg19_bn" --device "cuda:0" --dataset "cifar10"
+```
+
+
+
+#### Training
+
+This is an example for training BadNets and Venom-BadNets.  Other hyperparameters follow default values in `attack/prototype.py`.
 
 1. Original BadNets
 
-```python
+```shell
 mkdir -p record/cifar10/vgg19_bn/original_attack/
-
 python ./attack/badnet.py --is_couple "False" --model vgg19_bn --sim_mode clean --yaml_path ../config/attack/prototype/cifar10.yaml --save_folder_name "cifar10/vgg19_bn/original_attack/original_badnet" --device "cuda:0"
 ```
 
@@ -62,9 +82,8 @@ python ./attack/badnet.py --is_couple "False" --model vgg19_bn --sim_mode clean 
 
 2. Venom-BadNets
 
-```python
+```shell
 mkdir -p record/cifar10/vgg19_bn/venom/single_deep_conv_10_beta_20_half_5
-
 python ./attack/badnet.py --is_couple "True" --model vgg19_bn --sim_mode "single_deep_conv_10" --half_epochs 5 --sim_beta 20 --yaml_path ../config/attack/prototype/cifar10.yaml --save_folder_name "cifar10/vgg19_bn/venom/single_deep_conv_10_beta_20_half_5/venom_badnet" --device "cuda:0"
 ```
 
