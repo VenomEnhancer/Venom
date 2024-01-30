@@ -1,0 +1,21 @@
+epochs: 100
+num_workers: 8
+dataset_path: ../data
+pin_memory: True
+non_blocking: True
+prefetch: False
+amp: False
+client_optimizer: sgd
+frequency_save: 0
+batch_size: 128
+lr: 0.01
+lr_scheduler: CosineAnnealingLR
+random_seed: 0
+sgd_momentum: 0.9
+wd: 0.0005
+
+attack_label_trans: all2one
+attack_target: 0
+pratio: 0.1
+attack: badnet
+patch_mask_path: ../resource/badnet/trigger_image.png

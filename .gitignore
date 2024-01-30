@@ -1,8 +1,8 @@
 .DS_Store
 data/
 record/
-resource/
-similarity/
+# resource/
+similarity/results/
 **/__pycache__/
 *.log
 *.zip
