@@ -18,7 +18,7 @@ conda activate venom
 sh ./sh/install.sh
 ```
 
-Note that for some attacks, they may need preprocessed datasets or pretrained models for training. For yoor ease, the datasets and models are provided in google drive. You can download label-consistent and ssba from [here](https://drive.google.com/drive/folders/1lnCObVBIUTSlLWIBQtfs_zi7W8yuvR-2?usp=share_link), and ada_blended from [here](https://drive.google.com/drive/folders/1927j981vXgTLSJM8NWJaGLvkrxIWPUHU?usp=sharing).
+Note that for some attacks, they may need preprocessed datasets or pretrained models for training. For your ease, the datasets and models are provided in google drive. You can download label-consistent and ssba from [here](https://drive.google.com/drive/folders/1lnCObVBIUTSlLWIBQtfs_zi7W8yuvR-2?usp=share_link), and ada_blended from [here](https://drive.google.com/drive/folders/1927j981vXgTLSJM8NWJaGLvkrxIWPUHU?usp=sharing).
 
 We also provide micro-trained model and generated TCDP in google drive, you can download them from [here](https://drive.google.com/drive/folders/1mSL64S07OQKw0VEzDDz6Bs2FzlG5Yf6C?usp=sharing). The downloaded files should be organized as follows：
 
@@ -105,7 +105,7 @@ python ./defense/nad.py --model "vgg19_bn" --result_file "cifar10/vgg19_bn/venom
 
 
 
-### Results
+## Results
 
 The experimental results in the paper can be found [here](https://docs.google.com/spreadsheets/d/1liGNtCqeaHOI2LR7TDcgzCRzqYJbsKhpoaAoPGwjqpk/edit?usp=sharing). You can refer to `utils/ASuR.py` to calculate the metric ASuR.
 

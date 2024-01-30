@@ -1,6 +1,6 @@
 # nohup sh venom_attack.sh > test.log 2>&1 &
 models="vgg19_bn" # vgg19_bn preactresnet18
-dataset="gtsrb" # cifar10 cifar100 gtsrb
+dataset="cifar10" # cifar10 cifar100 gtsrb
 device="cuda:0"
 sim_beta=20
 test_mode="venom"
