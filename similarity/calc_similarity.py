@@ -474,9 +474,9 @@ if __name__ == '__main__':
     # train/micro_train clean model 
     calc_sim.train_clean_model()
     # calculate TCDP
-    calc_sim.calc_TCDP(save_threshold=0.7, TCDP_name='test')
+    calc_sim.calc_TCDP(save_threshold=0.7, TCDP_name='single_deep_conv_10')
     # calculate mean act for TCDP
-    calc_sim.calc_mean_act_of_TCDP('test')
+    calc_sim.calc_mean_act_of_TCDP('single_deep_conv_10')
 
     
 '''
