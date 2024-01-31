@@ -73,6 +73,8 @@ This is an example for training BadNets and Venom-BadNets.  Other hyperparameter
 
 1. Original BadNets
 
+   You can train original badnets on vgg19_bn using cifar10 with the following script, or you can specify the settings with `original_attack.sh`.
+
 ```shell
 mkdir -p record/cifar10/vgg19_bn/original_attack/
 python ./attack/badnet.py --is_couple "False" --model vgg19_bn --sim_mode clean --yaml_path ../config/attack/prototype/cifar10.yaml --save_folder_name "cifar10/vgg19_bn/original_attack/original_badnet" --device "cuda:0"
@@ -81,6 +83,8 @@ python ./attack/badnet.py --is_couple "False" --model vgg19_bn --sim_mode clean 
 
 
 2. Venom-BadNets
+
+   You can train venom-enhanced badnets on vgg19_bn using cifar10 with the following script, or you can specify the settings with `venom_attack.sh`.
 
 ```shell
 mkdir -p record/cifar10/vgg19_bn/venom/single_deep_conv_10_beta_20_half_5
@@ -102,6 +106,8 @@ Similarly, you can run NAD defense on Venom-BadNets attack with the following sc
 ```python
 python ./defense/nad.py --model "vgg19_bn" --result_file "cifar10/vgg19_bn/venom/single_deep_conv_10_beta_20_half_5/venom_badnet" --yaml_path ./config/defense/nad/cifar10.yaml --dataset "cifar10"  --device "cuda:0"
 ```
+
+You can also specify the settings with `defense.sh`.
 
 
 

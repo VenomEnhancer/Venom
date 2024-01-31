@@ -21,7 +21,7 @@ python ./attack/${attack}.py --half_epochs ${half_epochs} --model ${models} --si
 else
 python ./attack/${attack}.py --half_epochs ${half_epochs} --model ${models} --sim_beta ${sim_beta} --is_couple ${is_couple} --sim_mode ${mode} --yaml_path ../config/attack/prototype/${dataset}.yaml --save_folder_name ${save_folder} --device ${device}
 fi
-# for defense in nad i-bau clp ft nc fp ep bnp npd
+# for defense in nad i-bau clp ft nc fp bnp npd
 # do
 # python ./defense/${defense}.py --model ${models} --result_file ${save_folder} --yaml_path ./config/defense/${defense}/${dataset}.yaml --dataset ${dataset}  --device ${device} 
 # done
