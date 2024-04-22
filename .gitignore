@@ -1,0 +1,8 @@
+.DS_Store
+data/
+record/
+# resource/
+similarity/results/
+**/__pycache__/
+*.log
+*.zip

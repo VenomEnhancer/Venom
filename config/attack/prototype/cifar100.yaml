@@ -1,0 +1,21 @@
+pin_memory: False
+non_blocking: True
+prefetch: False
+amp: True
+client_optimizer: sgd
+dataset: cifar100
+dataset_path: ../data
+frequency_save: 0
+batch_size: 128
+lr: 0.01
+lr_scheduler: CosineAnnealingLR
+random_seed: 0
+sgd_momentum: 0.9
+wd: 0.0005
+
+is_k: 0
+wd2: 0
+adam_betas: [0.9, 0.999]
+
+num_workers: 0
+epochs: 80
