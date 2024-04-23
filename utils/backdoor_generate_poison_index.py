@@ -35,19 +35,34 @@ def generate_single_target_attack_train_poison_index(
     logging.debug('Reminder: plz note that if p_num or pratio exceed the number of possible candidate samples\n then only maximum number of samples will be applied')
     logging.debug('Reminder: priority p_num > pratio, and choosing fix number of sample is prefered if possible ')
     poison_index = np.zeros(len(targets))
-    if train == False:
-        non_zero_array = np.where(targets != tlabel)[0]
+    if train == False: # poison test dataset
+        if dataset == 'tiny':
+            target_classes = get_target_class(dataset)
+            indexs = []
+            for label_m in target_classes:
+                if not label_m == tlabel: 
+                    indexs += list(np.where(targets == label_m)[0])
+            non_zero_array = np.array(indexs)
+        else:
+            non_zero_array = np.where(targets != tlabel)[0]
         poison_index[list(non_zero_array)] = 1
-    else:
-        #TRAIN !
+    else: # poison train dataset
         if clean_label == False:
             # in train state, all2one non-clean-label case NO NEED TO AVOID target class img
             if p_num is not None or round(pratio * len(targets)):
+                if dataset == 'tiny':
+                    target_classes = get_target_class(dataset)
+                    indexs = []
+                    for label_m in target_classes:
+                        indexs += list(np.where(targets == label_m)[0])
+                    p_range = np.array(indexs)
+                else:
+                    p_range = np.arange(len(targets))
                 if p_num is not None:
-                    non_zero_array = np.random.choice(np.arange(len(targets)), p_num, replace = False)
+                    non_zero_array = np.random.choice(p_range, p_num, replace = False)
                     poison_index[list(non_zero_array)] = 1
                 else:
-                    non_zero_array = np.random.choice(np.arange(len(targets)), round(pratio * len(targets)), replace = False)
+                    non_zero_array = np.random.choice(p_range, round(pratio * len(targets)), replace = False)
                     poison_index[list(non_zero_array)] = 1
         else:
             if p_num is not None or round(pratio * len(targets)):

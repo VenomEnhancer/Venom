@@ -106,6 +106,7 @@ class BadNet(NormalCase):
             train=True,
             pratio=args.pratio if 'pratio' in args.__dict__ else None,
             p_num=args.p_num if 'p_num' in args.__dict__ else None,
+            dataset=args.dataset
         )
 
         logging.debug(f"poison train idx is saved")
@@ -133,6 +134,7 @@ class BadNet(NormalCase):
             clean_test_dataset_targets,
             label_transform=bd_label_transform,
             train=False,
+            dataset=args.dataset
         )
 
         ### generate test dataset for ASR

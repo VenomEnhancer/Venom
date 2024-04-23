@@ -5,6 +5,40 @@ import torch.nn.functional as F
 import json
 import math
 
+def get_target_class_index(dataset,labels,without_attack_target=False, attack_target=0):
+    if dataset=='tiny':
+        target_classes = get_target_class(dataset)
+        target_indexs = []
+        for label_m in target_classes:
+            if without_attack_target and label_m == attack_target:
+                continue
+            target_indexs += torch.where(labels == label_m)[0].tolist()
+        total_indexs = set(range(labels.shape[0]))
+        other_indexs = list(total_indexs - set(target_indexs))
+        return target_indexs, other_indexs
+    else:
+        return NotImplementedError("Unsupported Dataset")
+
+def get_target_class(dataset):
+    if dataset=='tiny':
+        return [0, 9, 20, 28, 37, 38, 41, 58, 84, 89, 90, 95, 98, 102, 103, 135, 136, 156, 185, 192]
+    else:
+        return NotImplementedError("Unsupported Dataset")
+
+def get_target_layer(model_name):
+    if model_name == 'vgg19_bn':
+        return 'features.49'
+    elif model_name == 'preactresnet18':
+        return 'layer4.1.conv2'
+    elif model_name == 'preactresnet50':
+        return 'layer4.2.conv2'
+    elif model_name == 'vit_b_16':
+        return '1.encoder.layers.encoder_layer_11.dropout'
+    elif model_name == 'convnext_tiny':
+        return 'features.7.2.block.0'
+    else:
+        return NotImplementedError("Unsupported Model Structure")
+
 def auto_func(f='func1', batch_num_per_epoch=1):
     def func1(x):
         return torch.exp(-x / 300)
@@ -19,14 +53,6 @@ def auto_func(f='func1', batch_num_per_epoch=1):
     elif f == 'cos':
         return cos_func
     return None
-
-def get_target_layer(model_name):
-    if model_name == 'vgg19_bn':
-        return 'features.49'
-    elif model_name == 'preactresnet18':
-        return 'layer4.1.conv2'
-    else:
-        return NotImplementedError("Unsupported Model Structure")
 
 def get_single_deep_p1_list():
     return ['single_deep_p1',
@@ -67,32 +93,27 @@ def get_single_deep_p1_list():
 def init_layers(model_name, model):
     vgg_layers = {}
     if model_name == 'vgg19_bn':
-        module_dict = dict(model.named_modules())
         target_layer_names = [
-            'features.36',
-            'features.40',
-            'features.43',
-            'features.46',
-            'features.49'
-            ]
-        for target_layer_name in target_layer_names:
-            vgg_layers[target_layer_name] = module_dict[target_layer_name]
-            
+            # 'features.36',
+            # 'features.40',
+            # 'features.43',
+            # 'features.46',
+            'features.49']
     elif model_name == 'preactresnet18':
-        module_dict = dict(model.named_modules())
         target_layer_names = [
-            'layer3.0.conv1',
-            'layer3.0.conv2',
-            'layer3.1.conv1',
-            'layer3.1.conv2',
-            'layer4.0.conv1',
-            'layer4.0.conv2',
-            'layer4.1.conv1',
+            # 'layer3.0.conv1',
+            # 'layer3.0.conv2',
+            # 'layer3.1.conv1',
+            # 'layer3.1.conv2',
+            # 'layer4.0.conv1',
+            # 'layer4.0.conv2',
+            # 'layer4.1.conv1',
             'layer4.1.conv2',]
-        for target_layer_name in target_layer_names:
-            vgg_layers[target_layer_name] = module_dict[target_layer_name]
+    elif model_name == 'convnext_tiny':
+        target_layer_names = [
+            'features.7.2.block.0',
+            'features.7.2.block',]        
     elif model_name == 'InceptionResnetV1':
-        module_dict = dict(model.named_modules())
         target_layer_names = [
             'repeat_3.4.branch0.conv',
             'repeat_3.4.branch1.0.conv',
@@ -104,10 +125,13 @@ def init_layers(model_name, model):
             'block8.branch1.1.conv',
             'block8.branch1.2.conv',
             'block8.branch1.2.conv',
-            'block8.conv2d',
-            ]
-        for target_layer_name in target_layer_names:
-            vgg_layers[target_layer_name] = module_dict[target_layer_name]
+            'block8.conv2d',]
+    else:
+        target_layer_names = [get_target_layer(model_name)]
+        
+    module_dict = dict(model.named_modules())
+    for target_layer_name in target_layer_names:
+        vgg_layers[target_layer_name] = module_dict[target_layer_name]
     return vgg_layers
 
 def cosine(X,Y):

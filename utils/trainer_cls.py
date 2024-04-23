@@ -1778,15 +1778,27 @@ class BackdoorModelTrainer(ModelTrainerCLS_v2):
             log_probs = model(x)
             loss = self.criterion(log_probs, labels.long())
                 
-            sim_loss = 0.0
+            sim_loss = torch.tensor(0.).to(self.args.device)
             for layer_name in top_sim_channels.keys():
                 channels = top_sim_channels[layer_name] # {'layer1':{'idx':indexs,'act':tensor}}
                 channels['act'] = channels['act'].to(device, non_blocking=self.non_blocking)
-                tmp2 = activation[layer_name][:,channels['idx'],:,:]
-                batch_num = tmp2.shape[0]
-                tmp1 = torch.unsqueeze(channels['act'], dim=0).expand(batch_num, -1, -1,-1)
-                sim_loss+=torch.mean( (1-torch.sign(labels-self.args.attack_target)) * self.criterionAT(tmp1,tmp2,mode=self.args.sim_mode, sim_lf=self.args.sim_lf ) )
-            sim_loss = sim_loss * self.args.sim_beta
+                if self.args.model == 'vit_b_16':
+                    tmp2 = activation[layer_name][:,1:,:] # Bx196x768
+                    tmp2 = tmp2.reshape(tmp2.shape[0],tmp2.shape[1]*3,-1) # BxCxAA
+                    tmp2 = tmp2[:,channels['idx'],:] # Bx10xAA
+                    batch_num = tmp2.shape[0]
+                    tmp1 = torch.unsqueeze(channels['act'], dim=0).expand(batch_num, channels['act'].shape[0], channels['act'].shape[1]) # Bx10xAA
+                    sim_indexs = torch.where(labels==self.args.attack_target)[0].tolist()
+                    sim_loss += torch.tensor(0.) if not sim_indexs else torch.sum(self.criterionAT(tmp1[sim_indexs],tmp2[sim_indexs],mode=self.args.sim_mode, sim_lf=self.args.sim_lf ))
+                    # sim_loss+=torch.sum( (1-torch.sign(labels-self.args.attack_target)) * self.criterionAT(tmp1,tmp2,mode=self.args.sim_mode, sim_lf=self.args.sim_lf ) )
+                else:
+                    tmp2 = activation[layer_name][:,channels['idx'],:,:]
+                    batch_num = tmp2.shape[0]
+                    tmp1 = torch.unsqueeze(channels['act'], dim=0).expand(batch_num, channels['act'].shape[0], channels['act'].shape[1],channels['act'].shape[2])
+                    # use sum instead of mean, because in the batch there are some zeros 
+                    # sim_loss+=torch.mean( (1-torch.sign(labels-self.args.attack_target)) * self.criterionAT(tmp1,tmp2,mode=self.args.sim_mode, sim_lf=self.args.sim_lf ) )
+                    sim_indexs = torch.where(labels==self.args.attack_target)[0].tolist()
+                    sim_loss += torch.tensor(0.) if not sim_indexs else torch.mean(self.criterionAT(tmp1[sim_indexs],tmp2[sim_indexs],mode=self.args.sim_mode, sim_lf=self.args.sim_lf ))
 
             if self.first_iter:
                 # init weights
@@ -1795,10 +1807,14 @@ class BackdoorModelTrainer(ModelTrainerCLS_v2):
                 self.iter_num = torch.tensor(0.0)
                 self.auto_func = auto_func(self.args.auto_func, self.batch_num_per_epoch)
                 self.is_stable = False
-                self.first_iter = False
-                if self.args.auto_beta > 0:
-                    self.args.sim_beta = torch.round(loss.detach() / sim_loss.detach()).detach()* self.args.auto_beta
+                if sim_loss.item() > 0: 
+                    self.first_iter = False
+                    if self.args.auto_beta > 0:
+                        self.args.sim_beta = torch.round(loss.detach() / sim_loss.detach()).detach()* self.args.auto_beta
+                        self.args.sim_beta = torch.min(torch.tensor(50.0), self.args.sim_beta)
+            sim_loss = sim_loss * self.args.sim_beta
             
+            # adjust weights
             if not self.is_stable:
                 # calc weight of L2
                 self.weight2 = self.auto_func(self.iter_num)
@@ -1806,8 +1822,7 @@ class BackdoorModelTrainer(ModelTrainerCLS_v2):
                 if self.weight2 < 0.01:
                     self.weight2 = torch.tensor(0.01)
                     self.is_stable = True
-                self.iter_num += 1
-                
+                self.iter_num += 1               
             if self.args.auto_norm == 'add':
                 self.weight1 = 2.0 - self.weight2
             

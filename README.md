@@ -63,6 +63,13 @@ mkdir -p similarity/results/cifar10/vgg19_bn/similarity/
 python similarity/calc_similarity.py --mode calc --save_path "results/cifar10/vgg19_bn" --model "vgg19_bn" --device "cuda:0" --dataset "cifar10"
 ```
 
+or calculate TCDP using matrix operation:
+
+```shell
+mkdir -p similarity/results/cifar10/vgg19_bn/similarity/
+python similarity/calc_sim_matrix.py --mode calc --save_path "results/cifar10/vgg19_bn" --model "vgg19_bn" --device "cuda:0" --dataset "cifar10"
+```
+
 
 
 #### Training
@@ -116,7 +123,6 @@ The experimental results in the paper can be found [here](https://docs.google.co
 
 
 
-## Notation
+## Acknowledgements
 
-Our implementation is based on [BackdoorBench](https://github.com/SCLBD/BackdoorBench), and we refer readers to [BackdoorBench](https://github.com/SCLBD/BackdoorBench) for detailed instructions regarding the basic configuration.
-
+As this code is reproduced based on the open-sourced code [BackdoorBench](https://github.com/SCLBD/BackdoorBench), the authors would like to thank their contribution and help. You can find detailed instructions in the repo regarding the basic configuration.
