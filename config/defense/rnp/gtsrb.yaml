@@ -1,0 +1,27 @@
+device: 'cuda:1'
+model: 'vgg19_bn'
+
+amp: True
+pin_memory: True
+non_blocking: True
+prefetch: False
+
+
+checkpoint_load:
+checkpoint_save:
+log:
+dataset_path: './data'
+dataset: 'gtsrb'
+num_workers: 4
+frequency_save: 0
+
+random_seed: 0
+
+batch_size: 256
+
+lr_scheduler: MultiStepLR
+
+client_optimizer: 'sgd'
+
+ratio: 0.01
+index:

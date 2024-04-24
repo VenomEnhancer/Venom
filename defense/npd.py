@@ -657,9 +657,26 @@ class NPD(defense):
         result = self.mitigation()
         return result
     
+    def get_npd_target_layer(model_name):
+        if model_name == 'vgg19_bn':
+            return 'features.46'
+        elif model_name == 'preactresnet18':
+            return 'layer4.1.conv1'
+        elif model_name == 'preactresnet50':
+            return 'layer4.2.conv1' # 'layer4.2.conv3'
+        elif model_name == 'vit_b_16':
+            return '1.encoder.layers.encoder_layer_10'
+        elif model_name == 'convnext_tiny':
+            return 'features.7.1.block.0'
+        else:
+            return NotImplementedError("Unsupported Model Structure")
+    
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=sys.argv[0])
     NPD.add_arguments(parser)
     args = parser.parse_args()
+    args.target_layer_name = NPD.get_npd_target_layer(args.model)
     ft_method = NPD(args)
+    os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
     result = ft_method.defense(args.result_file)
