@@ -1,5 +1,3 @@
-# Venom: A Generic Backdoor Attack Enhancer for Improving Survivability by Decision Path Coupling
-
 ![](./image/Overview.png)
 
 Backdoor attacks have been one of the emerging security threats to deep neural networks (DNNs), leading to serious consequences. One of the mainstream backdoor defenses is model reconstruction-based. Such defenses adopt model unlearning or pruning to eliminate backdoors. However, little attention has been paid to survive from such defenses. To bridge the gap, we propose VENOM, the first generic backdoor attack enhancer to improve the survivability of the existing backdoor attacks against model reconstruction-based defenses. We formalize VENOM as a binary-task optimization problem. The first is the original backdoor attack task to preserve the original attack capability, while the second is the attack enhancement task to improve the attack survivability. To realize the second task, we propose attention imitation loss to force the decision path of poisoned samples in backdoored models to couple with the critical decision path of benign samples, which makes backdoors difficult to eliminate. Our extensive evaluation on three DNNs and four datasets has demonstrated that VENOM significantly improves the survivability of eight state-of-the-art attacks against ten state-of-the-art defenses without impacting the capability of the original attacks.
@@ -15,31 +13,6 @@ conda create -n venom python=3.8
 conda activate venom
 sh ./sh/install.sh
 ```
-
-Note that for some attacks, they may need preprocessed datasets or pretrained models for training. For your ease, the datasets and models are provided in google drive. You can download label-consistent and ssba from [here](https://drive.google.com/drive/folders/1lnCObVBIUTSlLWIBQtfs_zi7W8yuvR-2?usp=share_link), and ada_blended from [here](https://drive.google.com/drive/folders/1927j981vXgTLSJM8NWJaGLvkrxIWPUHU?usp=sharing).
-
-We also provide micro-trained model and generated TCDP in google drive, you can download them from [here](https://drive.google.com/drive/folders/1mSL64S07OQKw0VEzDDz6Bs2FzlG5Yf6C?usp=sharing). The downloaded files should be organized as follows：
-
-```
-Venom/
-│
-├── resource/
-│   ├── ada_blended/
-│   ├── badnet/
-│   ├── blended/
-│   ├── label-consistent/
-│   ├── ssba/
-│   └── trojannn/
-│
-├── similarity/
-│   ├── results/
-│   ├── calc_similarity.py
-│   ├── CKA.py
-│   └── sim.yaml
-│
-└── ...
-```
-
 
 
 ## Quick Start
@@ -118,7 +91,7 @@ You can also specify the settings with `defense.sh`.
 
 ## Results
 
-The experimental results in the paper can be found [here](https://docs.google.com/spreadsheets/d/1liGNtCqeaHOI2LR7TDcgzCRzqYJbsKhpoaAoPGwjqpk/edit?usp=sharing). You can refer to `utils/ASuR.py` to calculate the metric ASuR.
+You can refer to `utils/ASuR.py` to calculate the metric ASuR.
 
 
 
